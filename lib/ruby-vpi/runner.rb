@@ -16,14 +16,11 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+require 'byebug'
 require 'ruby-vpi/util'
 
 # go into same directory as the test runner file
-  if RUBY_VERSION =~ /^1\.9\./
-    path = caller.grep(/:in `require'/).first
-  else
-    path = caller.reject {|s| s =~ /:in /}.first
-  end
+  path = caller.grep(/:in `require'/).first
 
   if path
     dir = File.dirname path[/^[^:]*/]

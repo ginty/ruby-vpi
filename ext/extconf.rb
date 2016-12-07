@@ -15,11 +15,11 @@ require 'mkmf'
   require 'rbconfig'
 
   # possible names under which Ruby library is installed
-  rubyLibNames = Config::CONFIG.values.join(' ').
+  rubyLibNames = RbConfig::CONFIG.values.join(' ').
                  scan(/-l(ruby\S*)/).flatten.uniq
 
   # possible places where Ruby library is installed
-  rubyLibPaths = Config::CONFIG.values.join(' ').
+  rubyLibPaths = RbConfig::CONFIG.values.join(' ').
                  scan(/-L(\S+)/).flatten.
                  select {|f| File.exist? f }
 

@@ -16,7 +16,7 @@ module RubyVPI
 
   # List of supported Verilog simulators.
   SIMULATORS = [
-    Simulator.new(:cver,  'GPL Cver',        '-DPRAGMATIC_CVER',  ''),
+    Simulator.new(:cver,  'GPL Cver',        '-DPRAGMATIC_CVER -fPIC',  ''),
     Simulator.new(:ivl,   'Icarus Verilog',  '-DICARUS_VERILOG',  ''),
     Simulator.new(:ncsim, 'Cadence NC-Sim',  '-DCADENCE_NCSIM',   ''),
     Simulator.new(:vcs,   'Synopsys VCS',    '-DSYNOPSYS_VCS',    ''),

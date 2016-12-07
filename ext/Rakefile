@@ -38,7 +38,7 @@ file 'Makefile' => [:swig, 'extconf.rb'] do |t|
   ruby t.prerequisites[1], *args
 end
 
-CLEAN.include 'Makefile', 'mkmf.log', '*.o', "*.#{Config::CONFIG['DLEXT']}"
+CLEAN.include 'Makefile', 'mkmf.log', '*.o', "*.#{RbConfig::CONFIG['DLEXT']}"
 
 
 desc 'Generate Ruby wrapper for VPI.'

@@ -9,6 +9,7 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+require 'byebug'
 require 'rake/clean'
 
 require 'tempfile'
@@ -65,7 +66,7 @@ task :default => :build
 
     desc "Builds object files for #{sim.name}."
     task taskName => ['obj', 'ext'] do
-      src = RubyVPI::Project[:name] + '.' + Config::CONFIG['DLEXT']
+      src = RubyVPI::Project[:name] + '.' + RbConfig::CONFIG['DLEXT']
       dst = File.expand_path(File.join('obj', "#{sim.id}.so"))
 
       unless File.exist? dst
