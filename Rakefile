@@ -10,8 +10,6 @@
 # See the file named LICENSE for details.
 
 require 'rake/clean'
-require 'rake/rdoctask'
-require 'rake/gempackagetask'
 
 require 'tempfile'
 require 'rbconfig'
@@ -162,15 +160,6 @@ task :default => :build
   end
   CLOBBER.include DYNAMIC_DOCS
 
-  Rake::RDocTask.new 'doc/api/ruby' do |t|
-    Rake::Task['doc/api'].invoke
-    t.rdoc_dir = t.name
-
-    Rake::Task[DYNAMIC_DOCS].invoke
-    t.rdoc_files.include 'bin/{ruby-vpi,*.rb}', 'lib/**/*.rb', DYNAMIC_DOCS
-  end
-
-
   desc 'Build API reference for C.'
   file 'doc/api/c' => 'doc/api' do |t|
     # doxygen outputs to this temporary destination
@@ -183,59 +172,7 @@ task :default => :build
     mv tempDest, t.name
   end
 
-# packaging
-  spec = Gem::Specification.new do |s|
-    s.name              = RubyVPI::Project[:name].downcase
-    s.version           = RubyVPI::Project[:version]
-    s.summary           = "Ruby interface to IEEE 1364-2005 Verilog VPI"
-    s.description       = "Ruby-VPI is a #{s.summary} and a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through Ruby. It lets you create complex Verilog test benches easily and wholly in Ruby."
-    s.homepage          = RubyVPI::Project[:website]
-    s.rubyforge_project = s.name
-
-    s.files       = FileList['**/*'].exclude('_darcs', DYNAMIC_DOCS)
-    s.autorequire = s.name
-    s.extensions << 'gem_extconf.rb'
-    s.executables = s.name
-
-    s.requirements << "C language compiler"
-
-    s.add_dependency 'rake',       '>= 0.7.0'
-    s.add_dependency 'rspec',      '>= 1.0.0'
-    s.add_dependency 'rcov',       '>= 0.7.0'
-    s.add_dependency 'xx'           # needed by rcov
-    s.add_dependency 'ruby-debug', '>= 0.5.2'
-    s.add_dependency 'ruby-prof'
-  end
-
-  Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.need_tar = true
-  end
-
-# installation
-  desc "Configures the gem during installation."
-  task :gem_config_inst do |t|
-    # make documentation available to gem_server
-    gemDir  = File.dirname(__FILE__)
-    gemName = File.basename(gemDir)
-    docDir  = File.join('..', '..', 'doc', gemName)
-
-    mkdir_p docDir
-    ln_sf gemDir, File.join(docDir, 'rdoc')
-  end
-
-# releasing
-  desc 'Build release packages.'
-  task :dist => [:clobber, :doc, :ref] do
-    system 'rake package'
-  end
-
 # utility
-  desc 'Upload to project website.'
-  task :upload => [:doc, :ref] do
-    sh "rsync -av doc/ ~/www/lib/#{spec.name}"
-    sh "rsync -av doc/api/ ~/www/lib/#{spec.name}/api/ --delete"
-  end
-
   desc "Ensure that examples work with $SIMULATOR"
   task :test => :build do
     # ensures that current sources are tested instead of the installed gem
